@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     #custom
     'polls_api',
+    'polls_ui',
 ]
 
 MIDDLEWARE = [

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #thirdparty
+    'rest_framework',
 
     #custom
     'polls_api',
@@ -123,3 +124,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Hashfield settings
+HASHID_FIELD_SALT = "f95Imz7gzTYACS3uzdHK9QXho6NIwQqJ621OarXnUPbRqNEdlKibjbRV6uuzN3QJDonM6ckQuqFpZSDY"

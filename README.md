@@ -8,5 +8,9 @@
 super user / password - pipl / pipl.super.user
 # yes this should never be saved in a git commit, this is just a temp project
 
-#list of things to make this better
+#design decisions
+* PUT and DELETE is disabled on polls to prevent other individuals from changing a poll (no authentication) 
+
+#future improvements
 1. Change table names and urls to be plural instead of singular polls vs poll
+2. Add authentication

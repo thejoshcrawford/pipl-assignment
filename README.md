@@ -21,3 +21,5 @@ not sure how to best make the vue router work with the django router
 show the latest polls on the first page the polls on the first
 form validation should be added
 did not use ES2015 for compatibility 
+separate vue code and templates
+create vue components

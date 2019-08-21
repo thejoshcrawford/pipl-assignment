@@ -10,54 +10,71 @@
 </head>
 
 <body>
-    <div id='app' class='container'>
-        <div class='row'>
-            <div class='col'>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col">
                 <h1>Create a Poll</h1>
                 <div class="form-group">
                     <label for="poll-title">Poll Title</label>
-                    <input type="text" class="form-control" id="poll-title" aria-describedby="titleHelp" placeholder="Enter title">
+                    <input type="text" class="form-control" id="poll-title" aria-describedby="titleHelp"
+                        v-model="newPoll.title"
+                        placeholder="Enter title">
                 </div>
                 <div class="form-group">
                     <label>Poll Options</label>
-                    <input type="text" class="form-control mt-1" aria-describedby="optionHelp" 
-                        v-for="(option, index) in newPoll.options" v-bind:key="index"
-                    v-model="option.name"
-                    placeholder="Enter poll option">
+                    <input type="text" class="form-control mt-1" aria-describedby="optionHelp"
+                        v-for="(option, index) in newPoll.options" v-bind:key="index" v-model="option.title"
+                        placeholder="Enter poll option">
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-primary" v-on:click="addOption">Add Option</button>
                 </div>
-                <button type="submit" class="btn btn-primary">Create Poll</button>
+                <button type="submit" class="btn btn-primary" v-on:click="createPoll">Create Poll</button>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        crossorigin="anonymous"></script>
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
     <script type="text/javascript">
         new Vue({
-            el: '#app',
+            el: "#app",
             data: {
                 polls: [],
                 loading: false,
                 newPoll: {
+                    title: '',
                     options: [
-                        { name: '' },
+                        { title: "" },
                     ]
                 },
                 message: null,
-                newArticle: {
-                    'article_heading': null,
-                    'article_body': null
-                },
-            }, mounted: function () { }, 
+            }, mounted: function () { },
             methods: {
-                addOption: function() {
-                    this.newPoll.options.push({name: ''})
+                addOption: function () {
+                    this.newPoll.options.push({ name: "" })
+                },
+                createPoll: function () {
+                    this.loading = true;
+                    this.$http.post("/api/poll/",
+                        this.newPoll,
+                        {
+                            headers: {
+                                'X-CSRFToken': document.cookie.split('; ').filter(function (val) {
+                                    return val.substring(0, 10) == 'csrftoken=';
+                                })[0].slice(10)
+                            }
+                        })
+                        .then((response) => {
+                            this.loading = false;
+                            alert("sucess")
+                        })
+                        .catch((err) => {
+                            this.loading = false;
+                            console.log(err);
+                        })
                 },
             }
         }); 

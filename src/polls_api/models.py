@@ -2,12 +2,11 @@ from django.db import models
 
 # Create your models here.
 class Poll(models.Model):
-    name = models.TextField()
-    description = models.TextField()
+    title = models.TextField()
 
 class PollOption(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
-    name = models.TextField()
+    title = models.TextField()
 
 class BrowserInstance(models.Model):
     ip = models.TextField()

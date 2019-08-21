@@ -1,3 +1,25 @@
+Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@thejoshcrawford 
+Learn Git and GitHub without any code!
+Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
+
+ 
+40
+277 211 codingforentrepreneurs/Try-Django
+ Code  Issues 2  Pull requests 1  Projects 0  Wiki  Security  Insights
+Try-Django/.gitignore
+@codingforentrepreneurs codingforentrepreneurs Getting started [Videos 1-6]
+1fab917 on Jul 2, 2018
+110 lines (88 sloc)  1.22 KB
+    
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -5,6 +27,11 @@ __pycache__/
 
 # C extensions
 *.so
+
+.DS_Store
+bin/
+include/
+pip-selfcheck.json
 
 # Distribution / packaging
 .Python
@@ -102,3 +129,15 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About

@@ -1,8 +1,14 @@
+import random
+import string
 from django.db import models
+
+def create_url(): 
+    return ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(8))
 
 # Create your models here.
 class Poll(models.Model):
     title = models.TextField()
+    url = models.TextField(unique=True, default=create_url)
 
 class PollOption(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)

@@ -9,6 +9,7 @@ def create_url():
 class Poll(models.Model):
     title = models.TextField()
     url = models.TextField(unique=True, default=create_url)
+    date = models.DateTimeField(auto_now_add=True)
 
 class PollOption(models.Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)

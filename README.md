@@ -23,3 +23,4 @@ form validation should be added
 did not use ES2015 for compatibility 
 separate vue code and templates
 create vue components
+disable debug mode

@@ -17,8 +17,7 @@
                 <div class="form-group">
                     <label for="poll-title">Poll Title</label>
                     <input type="text" class="form-control" id="poll-title" aria-describedby="titleHelp"
-                        v-model="newPoll.title"
-                        placeholder="Enter title">
+                        v-model="newPoll.title" placeholder="Enter title">
                 </div>
                 <div class="form-group">
                     <label>Poll Options</label>
@@ -30,6 +29,16 @@
                     <button type="button" class="btn btn-primary" v-on:click="addOption">Add Option</button>
                 </div>
                 <button type="submit" class="btn btn-primary" v-on:click="createPoll">Create Poll</button>
+                <hr>
+                <h1>Recent Polls</h1>
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="poll in polls">
+                        <div class="row">
+                            <div class="col">{poll.title}</div>
+                            <div class="col"><a v-bind:href="'poll/' + poll.url">{origin}/{poll.url}</a></div> 
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -40,28 +49,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
     <script type="text/javascript">
         new Vue({
+            delimiters: ['{', '}'],
             el: "#app",
             data: {
+                origin: window.location.origin,
                 polls: [],
-                loading: false,
                 newPoll: {
                     title: '',
                     options: [
                         { title: "" },
                     ]
-                },
-                message: null,
-            }, mounted: function () { },
+                }
+            },
+            mounted: function () {
+                this.getPolls()
+            },
             methods: {
+                getPolls: function () {
+                    this.$http.get("/api/poll")
+                        .then(function (response) {
+                            let polls = response.body
+                            this.polls = polls.sort(function (a,b) {
+                                if (b.date === null) {
+                                    return -1
+                                }
+
+                                if (a.date > b.date){
+                                    return -1
+                                } else if (a.date < b.date) {
+                                    return 1
+                                } 
+                                return 0
+                            })
+                        })
+                        .catch(function (err) {
+                            console.log(err)
+                        })
+                },
                 addOption: function () {
                     this.newPoll.options.push({ name: "" })
                 },
                 createPoll: function () {
                     var vm = this;
-                    this.loading = true;
                     var cookie = document.cookie.split('; ').filter(function (val) {
-                                        return val.substring(0, 10) == 'csrftoken=';
-                                    })[0].slice(10)
+                        return val.substring(0, 10) == 'csrftoken=';
+                    })[0].slice(10)
                     this.$http.post("/api/poll/",
                         this.newPoll,
                         {
@@ -69,40 +101,41 @@
                                 'X-CSRFToken': cookie
                             }
                         })
-                    .then(function(response) {
-                        let pollId = response.body.id;
+                        .then(function (response) {
+                            let poll = response.body;
 
-                        // ideally this is one request or completed in parallel with axios or the like
-                        vm.newPoll.options.forEach(function(option) {
-                            option['poll'] = pollId
-                            vm.$http.post("/api/polloption/",
-                            option,
-                            {
-                                headers: {
-                                    'X-CSRFToken': cookie
-                                }
+                            // ideally this is one request or completed in parallel with axios or the like
+                            vm.newPoll.options.forEach(function (option) {
+                                option['poll'] = poll.id
+                                vm.$http.post("/api/polloption/",
+                                    option,
+                                    {
+                                        headers: {
+                                            'X-CSRFToken': cookie
+                                        }
+                                    })
+                                    .then(function (res) {
+                                        console.log(res);
+                                    })
+                                    .catch(function (err) {
+                                        console.log(err);
+                                    })
                             })
-                            .then(function (res) {
-                                console.log(res);
-                            })
-                            .catch(function(err) {
-                                console.log(err);
-                            })  
+
+                            // add poll to list
+                            this.polls.splice(0,0,poll)
+
+                            // reset
+                            this.newPoll = {
+                                title: '',
+                                options: [
+                                    { title: "" },
+                                ]
+                            }   
                         })
-
-                        // reset
-                        this.newPoll =  {
-                            title: '',
-                            options: [
-                                { title: "" },
-                            ]
-                        },
-                        this.loading = false;
-                    })
-                    .catch(function(err) {
-                        this.loading = false;
-                        console.log(err);
-                    })
+                        .catch(function (err) {
+                            console.log(err);
+                        })
                 },
             }
         }); 

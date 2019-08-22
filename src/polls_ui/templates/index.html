@@ -57,24 +57,52 @@
                     this.newPoll.options.push({ name: "" })
                 },
                 createPoll: function () {
+                    var vm = this;
                     this.loading = true;
+                    var cookie = document.cookie.split('; ').filter(function (val) {
+                                        return val.substring(0, 10) == 'csrftoken=';
+                                    })[0].slice(10)
                     this.$http.post("/api/poll/",
                         this.newPoll,
                         {
                             headers: {
-                                'X-CSRFToken': document.cookie.split('; ').filter(function (val) {
-                                    return val.substring(0, 10) == 'csrftoken=';
-                                })[0].slice(10)
+                                'X-CSRFToken': cookie
                             }
                         })
-                        .then((response) => {
-                            this.loading = false;
-                            alert("sucess")
+                    .then(function(response) {
+                        let pollId = response.body.id;
+
+                        // ideally this is one request or completed in parallel with axios or the like
+                        vm.newPoll.options.forEach(function(option) {
+                            option['poll'] = pollId
+                            vm.$http.post("/api/polloption/",
+                            option,
+                            {
+                                headers: {
+                                    'X-CSRFToken': cookie
+                                }
+                            })
+                            .then(function (res) {
+                                console.log(res);
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            })  
                         })
-                        .catch((err) => {
-                            this.loading = false;
-                            console.log(err);
-                        })
+
+                        // reset
+                        this.newPoll =  {
+                            title: '',
+                            options: [
+                                { title: "" },
+                            ]
+                        },
+                        this.loading = false;
+                    })
+                    .catch(function(err) {
+                        this.loading = false;
+                        console.log(err);
+                    })
                 },
             }
         }); 

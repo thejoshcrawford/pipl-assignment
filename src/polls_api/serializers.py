@@ -7,6 +7,8 @@ class PollOptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PollSerializer(serializers.ModelSerializer):
+    options = PollOptionSerializer(many=True)
+
     class Meta:
         model = Poll
         fields = '__all__'

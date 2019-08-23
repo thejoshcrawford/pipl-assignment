@@ -9,6 +9,7 @@ class PollViewSet(
     viewsets.GenericViewSet):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
+    lookup_field = 'url'
 
 class PollOptionViewSet(
     mixins.CreateModelMixin, 

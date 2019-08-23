@@ -37,54 +37,26 @@
             }
         
         const Poll = { 
+            delimiters: ['{', '}'],
             template: `
                 <div>
                     <router-link v-bind:to="{name: 'create'}"> <- Back</router-link>
-                    <h1>Create a Poll</h1>
+                    <h1>{activePoll.title}</h1>
                     <ul>
-                        <li v-for=""></li>
+                        <li v-for="option in activePoll.options">{option.title}</li>
                     </ul>
                 </div>`,
+            data: function() {
+                return store
+            },
+            mounted: function () {
+                this.getPoll()
+            },
             methods: {
                 getPoll: function() {
-                    this.$http.post("/api/poll/",
-                        this.newPoll,
-                        {
-                            headers: {
-                                'X-CSRFToken': cookie
-                            }
-                        })
+                    this.$http.get("/api/poll/" + this.$route.params.pollUrl)
                         .then(function (response) {
-                            let poll = response.body;
-
-                            // ideally this is one request or completed in parallel with axios or the like
-                            vm.newPoll.options.forEach(function (option) {
-                                option['poll'] = poll.id
-                                vm.$http.post("/api/polloption/",
-                                    option,
-                                    {
-                                        headers: {
-                                            'X-CSRFToken': cookie
-                                        }
-                                    })
-                                    .then(function (res) {
-                                        console.log(res);
-                                    })
-                                    .catch(function (err) {
-                                        console.log(err);
-                                    })
-                            })
-
-                            // add poll to list
-                            this.polls.splice(0,0,poll)
-
-                            // reset
-                            this.newPoll = {
-                                title: '',
-                                options: [
-                                    { title: "" },
-                                ]
-                            }   
+                            this.activePoll = response.body
                         })
                         .catch(function (err) {
                             console.log(err);
@@ -192,6 +164,7 @@
         
         const router = new VueRouter({
            routes: routes,
+           mode: 'history'
         })
         
         const app = new Vue({

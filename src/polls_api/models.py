@@ -12,7 +12,7 @@ class Poll(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 class PollOption(models.Model):
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
     title = models.TextField()
 
 class BrowserInstance(models.Model):

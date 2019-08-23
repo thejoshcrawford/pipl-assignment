@@ -22,5 +22,5 @@ show the latest polls on the first page the polls on the first
 form validation should be added
 did not use ES2015 for compatibility 
 separate vue code and templates
-create vue components
+create proper vue components and data share
 disable debug mode

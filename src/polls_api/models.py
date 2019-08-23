@@ -21,5 +21,7 @@ class BrowserInstance(models.Model):
 
 class PollResponse(models.Model):
     poll_option = models.ForeignKey(PollOption, on_delete=models.CASCADE)
-    browser_instance = models.ForeignKey(BrowserInstance, on_delete=models.CASCADE)
+    # browser_instance = models.ForeignKey(BrowserInstance, on_delete=models.CASCADE)
+    ip = models.TextField()
+    user_agent = models.TextField()
 

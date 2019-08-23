@@ -25,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
     <script type="text/javascript">
         const store = {
+                csfr_token: '',
                 origin: window.location.origin,
                 polls: [],
                 activePoll: {},
@@ -42,8 +43,14 @@
                 <div>
                     <router-link v-bind:to="{name: 'create'}"> <- Back</router-link>
                     <h1>{activePoll.title}</h1>
-                    <ul>
-                        <li v-for="option in activePoll.options">{option.title}</li>
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="option in activePoll.options">
+                            <div class="row">
+                                <div class="col">{option.title}</div>
+                                <div class="col"><button class="btn btn-primary" v-on:click='vote(option.id)'>Vote for this one</button></div>
+                                <div class="col">Results placeholder</div>
+                            </div>
+                        </li>
                     </ul>
                 </div>`,
             data: function() {
@@ -57,6 +64,22 @@
                     this.$http.get("/api/poll/" + this.$route.params.pollUrl)
                         .then(function (response) {
                             this.activePoll = response.body
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        }
+                    )
+                },
+                vote: function(optionId) {
+                    this.$http.post("/api/poll_response/",
+                        {'poll_option': String(optionId)},
+                        {
+                            headers: {
+                                'X-CSRFToken': this.csfr_token
+                            }
+                        })
+                        .then(function (response) {
+                            console.log(response)
                         })
                         .catch(function (err) {
                             console.log(err);
@@ -108,14 +131,11 @@
                 },
                 createPoll: function () {
                     var vm = this;
-                    var cookie = document.cookie.split('; ').filter(function (val) {
-                        return val.substring(0, 10) == 'csrftoken=';
-                    })[0].slice(10)
                     this.$http.post("/api/poll/",
                         this.newPoll,
                         {
                             headers: {
-                                'X-CSRFToken': cookie
+                                'X-CSRFToken': this.csfr_token
                             }
                         })
                         .then(function (response) {
@@ -128,7 +148,7 @@
                                     option,
                                     {
                                         headers: {
-                                            'X-CSRFToken': cookie
+                                            'X-CSRFToken': this.csfr_token
                                         }
                                     })
                                     .then(function (res) {
@@ -174,7 +194,9 @@
                 return store
             },
             mounted: function () {
-                // this.router.replace("/")
+                this.csfr_token = document.cookie.split('; ').filter(function (val) {
+                        return val.substring(0, 10) == 'csrftoken=';
+                    })[0].slice(10)  
                 this.getPolls()
             },
             methods: {

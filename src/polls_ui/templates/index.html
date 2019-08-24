@@ -47,8 +47,8 @@
                         <li class="list-group-item" v-for="option in activePoll.options">
                             <div class="row">
                                 <div class="col">{option.title}</div>
-                                <div class="col"><button class="btn btn-primary" v-on:click='vote(option.id)'>Vote for this one</button></div>
-                                <div class="col">Results placeholder</div>
+                                <div v-if="activePoll.voted==false" class="col"><button class="btn btn-primary" v-on:click='vote(option.id)'>Vote for this one</button></div>
+                                <div v-if="activePoll.voted==true" class="col">{option.count}</div>
                             </div>
                         </li>
                     </ul>
@@ -72,7 +72,7 @@
                 },
                 vote: function(optionId) {
                     this.$http.post("/api/poll_response/",
-                        {'poll_option': String(optionId)},
+                        {'poll_option': optionId},
                         {
                             headers: {
                                 'X-CSRFToken': this.csfr_token
@@ -80,11 +80,16 @@
                         })
                         .then(function (response) {
                             console.log(response)
+                            let option = this.activePoll.options.filter(function(o){
+                                return o.id = optionId;
+                            })[0]
+                            option.count++
                         })
                         .catch(function (err) {
                             console.log(err);
                         }
                     )
+                    this.activePoll.voted = true;
                 }
             }
         }
@@ -125,6 +130,9 @@
             data: function() {
                 return store
             },
+            mounted: function () { 
+                this.getPolls()
+            },
             methods: {
                 addOption: function () {
                     this.newPoll.options.push({ name: "" })
@@ -144,11 +152,11 @@
                             // ideally this is one request or completed in parallel with axios or the like
                             vm.newPoll.options.forEach(function (option) {
                                 option['poll'] = poll.id
-                                vm.$http.post("/api/polloption/",
+                                vm.$http.post("/api/poll_option/",
                                     option,
                                     {
                                         headers: {
-                                            'X-CSRFToken': this.csfr_token
+                                            'X-CSRFToken': vm.csfr_token
                                         }
                                     })
                                     .then(function (res) {
@@ -174,32 +182,6 @@
                             console.log(err);
                         })
                 },
-            }
-        }
-
-        const routes = [
-            { name: 'create', path: '/', component: Create },
-            { name: 'poll', path: '/poll/:pollUrl', component: Poll },
-        ]
-        
-        const router = new VueRouter({
-           routes: routes,
-           mode: 'history'
-        })
-        
-        const app = new Vue({
-            router: router,
-            delimiters: ['{', '}'],
-            data: function() {
-                return store
-            },
-            mounted: function () {
-                this.csfr_token = document.cookie.split('; ').filter(function (val) {
-                        return val.substring(0, 10) == 'csrftoken=';
-                    })[0].slice(10)  
-                this.getPolls()
-            },
-            methods: {
                 getPolls: function () {
                     this.$http.get("/api/poll")
                         .then(function (response) {
@@ -222,8 +204,32 @@
                         })
                 },
             }
+        }
+
+        const routes = [
+            { name: 'create', path: '/', component: Create },
+            { name: 'poll', path: '/poll/:pollUrl', component: Poll },
+        ]
+        
+        const router = new VueRouter({
+           routes: routes,
+           mode: 'history'
+        })
+        
+        const app = new Vue({
+            router: router,
+            delimiters: ['{', '}'],
+            data: function() {
+                return store
+            },
+            mounted: function () {
+                this.csfr_token = document.cookie.split('; ').filter(function (val) {
+                        return val.substring(0, 10) == 'csrftoken=';
+                    })[0].slice(10)
+            },
         }).$mount('#app'); 
     </script>
+    {%csrf_token%}
 </body>
 
 </html>

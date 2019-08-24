@@ -9,7 +9,6 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
 class PollResponseSerializer(serializers.ModelSerializer):
     ip = serializers.CharField(required=False)
     user_agent = serializers.CharField(required=False)
@@ -35,19 +34,29 @@ class PollResponseSerializer(serializers.ModelSerializer):
         return PollResponse.objects.create(**validated_data)
 
 class PollOptionSerializer(serializers.ModelSerializer):
-    count = serializers.IntegerField(
-        source='poll_response.count', 
-        read_only=True
-    )
-    # count = serializers.IntegerField()
+    count = serializers.SerializerMethodField()
 
     class Meta:
         model = PollOption
-        fields = ('id', 'title', 'count')
+        fields = '__all__'
+
+    def get_count(self, obj):
+        return obj.response.count()
 
 class PollSerializer(serializers.ModelSerializer):
-    options = PollOptionSerializer(many=True)
+    options = PollOptionSerializer(many=True, read_only=True)
+    voted = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Poll
         fields = '__all__'
+
+    def get_voted(self, obj):
+        request = self.context.get("request")
+        ip = get_client_ip(request)
+        user_agent = request.META['HTTP_USER_AGENT']
+        poll_id = obj.pk
+
+        if PollResponse.objects.filter(poll_option__poll__id=poll_id,ip=ip,user_agent=user_agent).exists():
+            return True
+        return False

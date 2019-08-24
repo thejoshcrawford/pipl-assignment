@@ -24,3 +24,5 @@ did not use ES2015 for compatibility
 separate vue code and templates
 create proper vue components and data share
 disable debug mode
+I don't show error when a user tried to vote twice, so that in case they do try to game the system they don't get feedback
+make the poll into a graph

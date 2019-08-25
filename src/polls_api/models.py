@@ -15,12 +15,10 @@ class PollOption(models.Model):
     poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
     title = models.TextField()
 
-class BrowserInstance(models.Model):
-    ip = models.TextField()
-    user_agent = models.TextField()
-
 class PollResponse(models.Model):
     poll_option = models.ForeignKey(PollOption, related_name='response', on_delete=models.CASCADE)
     ip = models.TextField()
     user_agent = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
 

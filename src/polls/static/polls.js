@@ -94,8 +94,9 @@ template: `
             <li class="list-group-item" v-for="poll in polls">
                 <div class="row">
                     <div class="col">{poll.title}</div>
-                    <!-- <div class="col"><a v-bind:href="origin + '/poll/' + poll.url">{origin}/poll/{poll.url}</a></div> -->
-                    <div class="col"><router-link v-bind:to="{name: 'poll', params: {pollUrl: poll.url}}">{origin}/poll/{poll.url}</router-link></div>
+                    <div class="col">
+                        <router-link v-bind:to="{name: 'poll', params: {pollUrl: poll.url}}">{origin}/poll/{poll.url}</router-link>
+                    </div>
                 </div>
             </li>
         </ul>

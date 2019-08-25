@@ -54,3 +54,5 @@ password - password
 - Disable debug mode
 - I don't show error when a user tries to vote twice, to limit feedback for users trying to hack the page
 - Sort poll after voting
+- Allow 5 votes for testing
+- Poll options are saved in a different order in which they are entered, fix by allowing multiple saved with one request or an order property

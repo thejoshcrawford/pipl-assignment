@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Poll, PollOption, PollResponse     
+from .models import Poll, PollOption, PollResponse  
+
+# Allow 5 votes for ease of testing
+MAX_VOTES = 5
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -26,7 +29,8 @@ class PollResponseSerializer(serializers.ModelSerializer):
         poll_option_id = validated_data.get('poll_option').pk
         poll_option = PollOption.objects.get(id=poll_option_id)
         poll_id = poll_option.poll.pk
-        if PollResponse.objects.filter(poll_option__poll__id=poll_id,ip=ip,user_agent=user_agent).exists():
+        
+        if PollResponse.objects.filter(poll_option__poll__id=poll_id,ip=ip,user_agent=user_agent).count() >= MAX_VOTES:  
             raise serializers.ValidationError("You may not vote twice on a poll.")
         
         validated_data['ip'] = ip
@@ -57,6 +61,6 @@ class PollSerializer(serializers.ModelSerializer):
         user_agent = request.META['HTTP_USER_AGENT']
         poll_id = obj.pk
 
-        if PollResponse.objects.filter(poll_option__poll__id=poll_id,ip=ip,user_agent=user_agent).exists():
+        if PollResponse.objects.filter(poll_option__poll__id=poll_id,ip=ip,user_agent=user_agent).count() >= MAX_VOTES:
             return True
         return False

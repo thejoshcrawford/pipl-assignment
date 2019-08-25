@@ -110,7 +110,7 @@ mounted: function () {
 },
 methods: {
     addOption: function () {
-        this.newPoll.options.push({ name: "" })
+        this.newPoll.options.push({ title: "" })
     },
     createPoll: function () {
         var vm = this;
@@ -161,18 +161,26 @@ methods: {
         this.$http.get("/api/poll")
             .then(function (response) {
                 let polls = response.body
-                this.polls = polls.sort(function (a,b) {
+                polls = polls.sort(function (a,b) {
+                    if (a.date === b.date) {
+                        return 0;
+                    }
+
                     if (b.date === null) {
                         return -1
+                    }
+                    
+                    if (a.date === null) {
+                        return 1
                     }
 
                     if (a.date > b.date){
                         return -1
-                    } else if (a.date < b.date) {
-                        return 1
                     } 
-                    return 0
+                    
+                    return 1
                 })
+                this.polls = polls.slice(0, 10)
             })
             .catch(function (err) {
                 console.log(err)

@@ -8,7 +8,7 @@ This is a simple poll web app that allows users to create and share polls.
 1. Clone this repo - `git clone git@github.com:thejoshcrawford/pipl-assignment.git`
 1. `cd pipl-assignment`
 1. Install the virtual environment - `virtualenv -p python3 .`
-1. `souce bin/activate`
+1. `souce bin/activate` or `. bin/activate` depending on your shell
 1. Install Django - `pip install Django`
 1. Install Django Rest Framework - `pip install djangorestframework`
 1. Create your database - `cd src`
@@ -45,16 +45,17 @@ password - password
 - PUT and DELETE is disabled on polls to prevent other individuals from changing a poll (no authentication) 
 
 ## Future Improvements or Considerations
-- Change table names and urls to be plural instead of singular polls vs poll
+- Change table names and urls to be plural instead of singular (polls vs poll)
 - Add authentication
-- Not of the best practice for making the Vue router work with the Django router
-- Show the latest polls on the first page the polls on the first
-- Form validation should be added
+- Determine the best practice for making the Vue router work with the Django router
+- Form validation should be added (limit poll creation if less than two options, show errors, disable button if not validated, etc)
 - Use complete ES2015 and create a build step for backwards compatibility
 - Separate Vue code and templates
-- Create proper Vue components and data share
+- Create proper Vue components and data store
 - Disable debug mode
-- I don't show error when a user tries to vote twice, to limit feedback for users trying to hack the page
+- Errors are not shown when a user tries to multi-vote this is to limit feedback for users trying to hack the page
 - Sort poll after voting
-- Allow 5 votes for testing
-- Poll options are saved in a different order in which they are entered, fix by allowing multiple saved with one request or an order property
+- Five votes are allowed for testing purposes
+- There is a bug where the poll options get saved in a different order than they were entered because of a timing issue. Fix this by bulk saving options with one request or adding an order property to the model and sorting by order.
+- Add navigation
+- Add more option types

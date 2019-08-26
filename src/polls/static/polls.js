@@ -74,12 +74,12 @@ template: `
     <div>
         <h1>Create a Poll</h1>
         <div class="form-group">
-            <label for="poll-title">Poll Title</label>
+            <label for="poll-title">Title</label>
             <input type="text" class="form-control" id="poll-title" aria-describedby="titleHelp"
                 v-model="newPoll.title" placeholder="Enter title">
         </div>
         <div class="form-group">
-            <label>Poll Options</label>
+            <label>Options</label>
             <input type="text" class="form-control mt-1" aria-describedby="optionHelp"
                 v-for="(option, index) in newPoll.options" v-bind:key="index" v-model="option.title"
                 placeholder="Enter poll option">

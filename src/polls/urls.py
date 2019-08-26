@@ -23,5 +23,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('poll/<slug:poll>', TemplateView.as_view(template_name="index.html")),
     path('poll/<slug:poll>/', TemplateView.as_view(template_name="index.html")), #combined the previous one with this one 
+    path('create', TemplateView.as_view(template_name="index.html")),
+    path('create/', TemplateView.as_view(template_name="index.html")),
     path('', TemplateView.as_view(template_name="index.html")),
 ]

@@ -28,7 +28,7 @@ This is a simple poll web app that allows users to create and share polls.
 made.
 
 ## Sites used for help
-- https://www.youtube.com/watch?v=F5mRW0jo-U4\
+- https://www.youtube.com/watch?v=F5mRW0jo-U4
 - https://medium.com/quick-code/crud-app-using-vue-js-and-django-516edf4e4217   
 - https://www.django-rest-framework.org/
 - https://stackoverflow.com/        
@@ -45,17 +45,17 @@ password - password
 - PUT and DELETE is disabled on polls to prevent other individuals from changing a poll (no authentication) 
 
 ## Future Improvements or Considerations
+- Five votes are allowed for testing purposes
+- Errors are not shown when a user tries to multi-vote this is to limit feedback for users trying to hack the page
 - Change table names and urls to be plural instead of singular (polls vs poll)
-- Add authentication
 - Determine the best practice for making the Vue router work with the Django router
 - Form validation should be added (limit poll creation if less than two options, show errors, disable button if not validated, etc)
 - Use complete ES2015 and create a build step for backwards compatibility
 - Separate Vue code and templates
 - Create proper Vue components and data store
-- Disable debug mode
-- Errors are not shown when a user tries to multi-vote this is to limit feedback for users trying to hack the page
 - Sort poll after voting
-- Five votes are allowed for testing purposes
-- There is a bug where the poll options get saved in a different order than they were entered because of a timing issue. Fix this by bulk saving options with one request or adding an order property to the model and sorting by order.
+- Fix bug where the poll options get saved in a different order than they were entered because of a timing issue. Fix this by bulk saving options with one request or adding an order property to the model and sorting by order.
+- Add authentication
 - Add navigation
 - Add more option types
+- Disable debug mode

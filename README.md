@@ -36,8 +36,10 @@ made.
 
 ## Login
 super user - josh
+
 password - password
-*Yes this should never be saved in a production repo*
+
+*In a secure production repo passwords should never be **password** nor commited to source control*
 
 ## Design Decisions
 - PUT and DELETE is disabled on polls to prevent other individuals from changing a poll (no authentication) 

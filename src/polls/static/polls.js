@@ -125,6 +125,26 @@ methods: {
                 let poll = response.body;
 
                 // ideally this is one request or completed in parallel with axios or the like
+                // let options = []
+                // vm.newPoll.options.forEach(function (option) {
+                //     option['poll']
+                //     options.push(option)
+                // })
+
+                // vm.$http.post("/api/poll_option/",
+                //     options,
+                //     {
+                //         headers: {
+                //             'X-CSRFToken': vm.csfr_token
+                //         }
+                //     })
+                //     .then(function (res) {
+                //         console.log(res);
+                //     })
+                //     .catch(function (err) {
+                //         console.log(err);
+                //     })
+                
                 vm.newPoll.options.forEach(function (option) {
                     option['poll'] = poll.id
                     vm.$http.post("/api/poll_option/",
